@@ -1,0 +1,49 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Analyse de mes parties</title>
+<style>
+:root{--bg:#eef1f4;--ink:#16232e;--mut:#5d6d7a;--card:#fff;--line:#d3dbe2;--l:#d6e0e8;--d:#6d8ca3;--a:#14293d;--c-meilleur:#2e8b57;--c-excellent:#6aa84f;--c-bon:#7f8c96;--c-imprecision:#d9a400;--c-erreur:#e07b1a;--c-gaffe:#c62f3a}
+@media(prefers-color-scheme:dark){:root{--bg:#121b22;--ink:#e6edf2;--mut:#9aabb8;--card:#1a252e;--line:#2c3b47;--l:#9db3c4;--d:#4d6a80;--a:#e6edf2}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,sans-serif}
+h1,h2,h3{font-family:Palatino,Georgia,serif;margin:0}h2{font-size:1.1rem;margin-bottom:.5rem}h3{font-size:1.05rem}
+header{display:flex;flex-wrap:wrap;gap:.8rem 1rem;align-items:end;padding:1rem 1.2rem;border-bottom:1px solid var(--line)}
+header h1{font-size:1.5rem;margin-right:auto}label{display:grid;font-size:.8rem;color:var(--mut);gap:2px}
+input,select,button{font:inherit;color:inherit}input,select{padding:.4rem .5rem;border:1px solid var(--line);border-radius:4px;background:var(--card)}
+#go{background:var(--a);color:var(--bg);border:0;border-radius:4px;padding:.5rem .9rem;cursor:pointer}
+#st{margin:.6rem 1.2rem 0;min-height:1.4em;color:var(--mut)}#pg{margin:0 1.2rem;width:calc(100% - 2.4rem)}
+.app{display:grid;grid-template-columns:250px minmax(0,1fr) 340px;gap:1.2rem;padding:1.2rem;align-items:start}
+@media(max-width:1050px){.app{grid-template-columns:1fr}}
+aside,#side>div{background:var(--card);border:1px solid var(--line);border-radius:6px;padding:.8rem;margin-bottom:.8rem}
+.gm{display:grid;grid-template-columns:1.6rem 1fr;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--line);padding:.45rem 0;cursor:pointer}
+.gm small{grid-column:2;color:var(--mut)}.gm b{align-self:center}.rV{color:var(--c-meilleur)}.rD{color:var(--c-gaffe)}.rN{color:var(--mut)}
+.bw{display:flex;gap:.6rem;max-width:620px}
+#eb{width:22px;border-radius:3px;background:#1d2a35;position:relative;overflow:hidden}
+#eb i{position:absolute;left:0;right:0;bottom:0;height:var(--w,50%);background:#fff;transition:height .25s}
+.board{flex:1;container-type:inline-size;display:grid;grid-template-columns:repeat(8,1fr);aspect-ratio:1;position:relative;border-radius:4px;overflow:hidden}
+.sq{position:relative;display:grid;place-items:center;font-size:9.6cqw;line-height:1}.sq.l{background:var(--l)}.sq.d{background:var(--d)}
+.sq[style]::before{content:"";position:absolute;inset:0;background:var(--h);opacity:.6}
+.sq span{position:relative}.sq .w{color:#fff;-webkit-text-stroke:1.5px #16232e}.sq .b{color:#15202a}
+.sq i{position:absolute;font:600 2.3cqw system-ui;opacity:.7;font-style:normal}.sq .r{top:3%;left:5%}.sq .f{bottom:3%;right:6%}
+.board svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.nav{display:flex;gap:.4rem;align-items:center;margin:.6rem 0;max-width:620px}.nav button{padding:.35rem .8rem;border:1px solid var(--line);background:var(--card);border-radius:4px;cursor:pointer}
+#ev{margin-left:auto;font-weight:600}#gr{width:100%;max-width:620px;display:block;border:1px solid var(--line);border-radius:4px;cursor:pointer}
+#info{margin-bottom:.6rem}#info small{color:var(--mut)}
+#ml{display:grid;grid-template-columns:2rem 1fr 1fr;gap:3px;max-height:320px;overflow:auto;align-content:start}#ml b{color:var(--mut);font-weight:400;align-self:center}
+.mv{border:0;border-left:4px solid var(--c);background:var(--bg);padding:.25rem .45rem;cursor:pointer;border-radius:3px;display:flex;justify-content:space-between;text-align:left}
+.mv.on{outline:2px solid var(--a)}.mv small{color:var(--c)}
+.meilleur{--c:var(--c-meilleur)}.excellent{--c:var(--c-excellent)}.bon{--c:var(--c-bon)}.imprecision{--c:var(--c-imprecision)}.erreur{--c:var(--c-erreur)}.gaffe{--c:var(--c-gaffe)}
+.chips{display:flex;flex-wrap:wrap;gap:.3rem;margin:.5rem 0}.chips span{border-left:4px solid var(--c);background:var(--bg);padding:.1rem .5rem;border-radius:3px;font-size:.85rem}
+#sm ul{margin:.4rem 0 0;padding-left:1.1rem}
+</style></head><body>
+<header><h1>Analyse de mes parties</h1>
+<label>Pseudo Chess.com<input id="u" value="Thomaschess-exe"></label>
+<label>Cadence<select id="tc"><option value="">Toutes</option><option value="blitz">Blitz</option><option value="rapid">Rapide</option><option value="bullet">Bullet</option><option value="daily">Quotidien</option></select></label>
+<label>Précision<select id="dp"><option value="10">Rapide</option><option value="12" selected>Normale</option><option value="14">Précise</option></select></label>
+<button id="go">Charger mes parties</button></header>
+<p id="st" role="status"></p><progress id="pg" max="1" value="0" hidden></progress>
+<main class="app">
+<aside><h2>Parties récentes</h2><div id="gl"><small>Clique sur « Charger mes parties ».</small></div></aside>
+<section><div id="info"></div>
+<div class="bw"><div id="eb"><i></i></div><div id="bd" class="board"></div></div>
+<div class="nav"><button id="b0">⏮</button><button id="b1">◀</button><button id="b2">▶</button><button id="b3">⏭</button><span id="ev"></span></div>
+<svg id="gr" viewBox="0 0 200 60"></svg></section>
+<section id="side"><div id="sm"></div><div id="ex"><p>Choisis une partie dans la liste : elle sera analysée dans ton navigateur.</p></div><div id="ml"></div></section>
+</main><script type="module" src="app.js"></script></body></html>
